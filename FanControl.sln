@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FanControl", "FanControl\FanControl.csproj", "{996B3983-DDE6-4945-B9A7-A36A4DCE4C48}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{996B3983-DDE6-4945-B9A7-A36A4DCE4C48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{996B3983-DDE6-4945-B9A7-A36A4DCE4C48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{996B3983-DDE6-4945-B9A7-A36A4DCE4C48}.Debug|x64.ActiveCfg = Debug|x64
+		{996B3983-DDE6-4945-B9A7-A36A4DCE4C48}.Debug|x64.Build.0 = Debug|x64
+		{996B3983-DDE6-4945-B9A7-A36A4DCE4C48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{996B3983-DDE6-4945-B9A7-A36A4DCE4C48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{996B3983-DDE6-4945-B9A7-A36A4DCE4C48}.Release|x64.ActiveCfg = Release|x64
+		{996B3983-DDE6-4945-B9A7-A36A4DCE4C48}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {40D9FDF3-F60A-4C05-A571-E99DCA91EDE9}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,120 @@
+﻿<UserControl x:Class="FanControl.ChartBase"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FanControl"
+             xmlns:d3="clr-namespace:InteractiveDataDisplay.WPF;assembly=InteractiveDataDisplay.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:VisibilityToCheckedConverter x:Key="VisibilityToCheckedConverter"/>
+        <d3:CountToVisibilityConverter x:Key="CountToVisibilityConverter"/>
+
+        <Style TargetType="d3:Legend">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="d3:Legend">
+                        <Grid Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,10,10,10">
+                                <Rectangle x:Name="legendBorder" Stroke="Black" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                            RadiusX="5" RadiusY="5" Fill="White" Opacity="0.6"
+                            Visibility="{Binding ItemsCount, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource CountToVisibilityConverter}}"/>
+                                <ScrollViewer x:Name="scrollViewer"
+                                      Margin="10,10,10,10" VerticalScrollBarVisibility="Auto" 
+                                      HorizontalScrollBarVisibility="Auto" IsTabStop="False"
+                                      MaxHeight="30"
+                                      BorderThickness="0">
+                                    <ContentPresenter/>
+                                </ScrollViewer>
+                            </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="12*"/>
+            <RowDefinition Height="0.8*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="11*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <!--Title-->
+        <TextBlock x:Name="Title" Text="Title" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" Grid.ColumnSpan="3"/>
+        <!--Chart-->
+        <d3:Chart Grid.Row="1" Grid.Column="1"
+                  x:Name="GraphChart"
+                  PlotHeight="100"
+                  IsAutoFitEnabled="False"
+                  IsHorizontalNavigationEnabled="False"
+                  IsVerticalNavigationEnabled="False"
+                  LeftTitle=""
+                  BottomTitle=""
+                  RightTitle=""
+                  Padding="0,5,15,0">
+            
+            <d3:Chart.LegendContent>
+                <d3:LegendItemsPanel>
+                    <d3:LegendItemsPanel.Resources>
+                        <DataTemplate x:Key="InteractiveDataDisplay.WPF.LineGraph">
+                            <StackPanel x:Name="LegendItem" Orientation="Horizontal">
+                                <CheckBox IsChecked="{Binding Path=Visibility, Converter={StaticResource VisibilityToCheckedConverter}, Mode=TwoWay}"/>
+                                <Line Width="15" Height="2" X1="0" Y1="0" X2="15" Y2="0" Stroke="{Binding Path=Stroke}" StrokeThickness="2"/>
+                                <TextBlock x:Name="Desc" Margin="5,0,0,0" Text="{Binding Path=Description}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </d3:LegendItemsPanel.Resources>
+                </d3:LegendItemsPanel>
+            </d3:Chart.LegendContent>
+            
+            <Grid x:Name="_contents">
+                <Canvas Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ContentPresenter},AncestorLevel=1},Path=ActualWidth}"
+                    Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ContentPresenter},AncestorLevel=1},Path=ActualHeight}"
+                    x:Name="Indicators"
+                    MouseMove="Canvas_MouseMove"
+                    MouseEnter="Canvas_MouseMove"
+                    MouseLeave="Canvas_MouseMove">
+                    <!--Mouse Event Capture-->
+                    <Rectangle Fill="White" Opacity="0.01"
+                           Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ContentPresenter},AncestorLevel=1},Path=ActualWidth}"
+                           Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ContentPresenter},AncestorLevel=1},Path=ActualHeight}"/>
+                    <!--X Indicator-->
+                    <Line x:Name="X_Indicator" Stroke="Blue" StrokeThickness="1" Visibility="Collapsed"
+                      Y2="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ContentPresenter},AncestorLevel=1},Path=ActualHeight}"/>
+                    <Grid x:Name="Pos_X_Value" Visibility="Collapsed" IsHitTestVisible="False"
+                      Canvas.Top="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ContentPresenter},AncestorLevel=1},Path=ActualHeight}">
+                        <Rectangle Fill="White" Opacity="0.8" StrokeThickness="1" Stroke="Black"/>
+                        <TextBlock x:Name="X_Value" Padding="2,0" FontSize="16"/>
+                    </Grid>
+                    <!--Y Indicator-->
+                    <Line x:Name="Y_Indicator" Stroke="Blue" StrokeThickness="1" Visibility="Collapsed"
+                    X2="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type ContentPresenter},AncestorLevel=1},Path=ActualWidth}"/>
+                    <Grid x:Name="Pos_Y_Value" Visibility="Collapsed" Margin="-50,0,0,0" IsHitTestVisible="False">
+                        <Rectangle Fill="White" Opacity="0.8" StrokeThickness="1" Stroke="Black"/>
+                        <TextBlock x:Name="Y_Value" Padding="2,0" FontSize="16"/>
+                    </Grid>
+                </Canvas>
+            </Grid>
+        </d3:Chart>
+        <!--Setting-->
+        <Grid x:Name="Settings" Grid.Row="1" Grid.Column="3" Focusable="True" MouseDown="Settings_MouseDown">
+            <!--Capture Mouse Event-->
+            <Rectangle Width="{Binding ElementName=Settings, Path=ActualWidth}" Height="{Binding ElementName=Settings, Path=ActualHeight}" Fill="White" Opacity="0.01"/>
+            <!--Border-->
+            <Rectangle Width="{Binding ElementName=Settings, Path=ActualWidth}" Height="{Binding ElementName=Settings, Path=ActualHeight}" Stroke="Gray" StrokeThickness="1"/>
+        </Grid>
+        <!--Info-->
+        <Border BorderThickness="1" BorderBrush="Gray" Grid.Row="2" Grid.ColumnSpan="3"/>
+        <Button x:Name="BtnPause" Grid.Row="3" Grid.Column="3" Background="Transparent" Click="BtnPause_Click">
+            <Grid>
+                <Image x:Name="_Play" Source="/FanControl;component/Control/image/Play.png" Visibility="Collapsed"/>
+                <Image x:Name="_Pause" Source="/FanControl;component/Control/image/Pause.png"/>
+            </Grid>
+        </Button>
+        <TextBlock x:Name="InfoContent" Text="Loading..." FontWeight="Bold" VerticalAlignment="Center" Margin="5,0" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3"/>
+    </Grid>
+</UserControl>

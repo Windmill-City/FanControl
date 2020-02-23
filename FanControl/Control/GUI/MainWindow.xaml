@@ -1,0 +1,141 @@
+﻿<Window x:Class="FanControl.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FanControl"
+        xmlns:d3="clr-namespace:InteractiveDataDisplay.WPF;assembly=InteractiveDataDisplay.WPF"
+        mc:Ignorable="d"
+        Title="FanControl" Height="900" Width="1200" Closed="Window_Closed" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" ResizeMode="CanMinimize">
+
+    <Grid x:Name="Root">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="Processors" VerticalAlignment="Top">
+                <StackPanel.Resources>
+                    <Style TargetType="local:InfoDisplay">
+                        <Setter Property="Padding" Value="5,10"/>
+                    </Style>
+                </StackPanel.Resources>
+                <local:InfoDisplay x:Name="Cpu"/>
+                <Line X1="0" X2="{Binding Path=ActualWidth, ElementName=Processors}" Stroke="Gray" StrokeThickness="1" Height="1" Visibility="{Binding ElementName=Gpu_1, Path=Visibility}"/>
+                <local:InfoDisplay x:Name="Gpu_1"/>
+                <Line X1="0" X2="{Binding Path=ActualWidth, ElementName=Processors}" Stroke="Gray" StrokeThickness="1" Height="1" Visibility="{Binding ElementName=Gpu_2, Path=Visibility}"/>
+                <local:InfoDisplay x:Name="Gpu_2"/>
+                <Line X1="0" X2="{Binding Path=ActualWidth, ElementName=Processors}" Stroke="Gray" StrokeThickness="1" Height="1"/>
+            </StackPanel>
+            <StackPanel x:Name="Fans" Grid.Row="1" VerticalAlignment="Bottom">
+                <StackPanel.Resources>
+                    <Style TargetType="local:FanInfo">
+                        <Setter Property="Padding" Value="5"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Line X1="0" X2="{Binding Path=ActualWidth, ElementName=Fans}" Stroke="Gray" StrokeThickness="1" Height="1"/>
+                <local:FanInfo x:Name="Fan_1"/>
+                <Line X1="0" X2="{Binding Path=ActualWidth, ElementName=Fans}" Stroke="Gray" StrokeThickness="1" Height="1" Visibility="{Binding ElementName=Fan_2, Path=Visibility}"/>
+                <local:FanInfo x:Name="Fan_2"/>
+                <Line X1="0" X2="{Binding Path=ActualWidth, ElementName=Fans}" Stroke="Gray" StrokeThickness="1" Height="1" Visibility="{Binding ElementName=Fan_3, Path=Visibility}"/>
+                <local:FanInfo x:Name="Fan_3"/>
+            </StackPanel>
+        </Grid>
+        <Line Y1="0" Y2="{Binding ElementName=Root, Path=ActualHeight}" Stroke="Gray" StrokeThickness="1" Width="1" Grid.Column="1" HorizontalAlignment="Left"/>
+        <StackPanel x:Name="Misc" Grid.Column="1">
+            <Grid x:Name="_Config" Height="176" MouseDown="Config_MouseDown" Focusable="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Margin" Value="10"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="MinWidth" Value="80"/>
+                    </Style>
+                </Grid.Resources>
+                <!--Capture mouse event-->
+                <Rectangle Grid.ColumnSpan="4" Grid.RowSpan="3" Fill="White" Opacity="0.01"/>
+                <!--Fan Count-->
+                <TextBlock Text="Fan Count"/>
+                <StackPanel Orientation="Horizontal" x:Name="_FanCount" Grid.Column="1">
+                    <Slider x:Name="_Count"
+                            Maximum="3"
+                            Minimum="1"
+                            TickFrequency="1"
+                            TickPlacement="TopLeft"
+                            IsSnapToTickEnabled="True"
+                            IsMoveToPointEnabled="True"
+                            Foreground="Black"
+                            VerticalAlignment="Bottom" Width="160"
+                            ValueChanged="_Count_ValueChanged" Margin="0,0,0,17"
+                            />
+                    <TextBlock Text="{Binding Path=Value, ElementName=_Count}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <!--Poll Span-->
+                <TextBlock Text="Poll Span" Grid.Row="1"/>
+                <StackPanel Orientation="Horizontal" x:Name="_PollSpan" Grid.Column="1" Grid.Row="1">
+                    <TextBox x:Name="_Span" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" LostFocus="_Span_LostFocus"/>
+                    <TextBlock Text="ms" FontSize="16" Margin="10,0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <!--Data Diff-->
+                <TextBlock Text="Trend Stable Time" Grid.Row="2"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="3">
+                    <TextBox x:Name="_TrendStableTime" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="16" LostFocus="_TrendStableTime_LostFocus"/>
+                    <TextBlock Text="second" FontSize="16" Margin="10,0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <!--Fan Mode-->
+                <TextBlock Text="Fan Mode" Grid.Column="2"/>
+                <ComboBox Name="_Mode" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="200" FontSize="16"
+                          SelectionChanged="_Mode_SelectionChanged">
+                    <ComboBoxItem Content="Auto"/>
+                    <ComboBoxItem Content="Max"/>
+                    <ComboBoxItem Content="OC"/>
+                    <ComboBoxItem Content="Silent" Visibility="Collapsed"/>
+                    <ComboBoxItem Content="Take Over EC"/>
+                    <ComboBoxItem Content="MaxQ"/>
+                    <ComboBoxItem Content="EC Custom"/>
+                    <ComboBoxItem Content="Unknown" Visibility="Collapsed"/>
+                </ComboBox>
+                <!--Select Graph-->
+                <TextBlock Text="Graph" Grid.Column="2" Grid.Row="1"/>
+                <RadioButton x:Name="_MonitorGraph" GroupName="Graph" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Left"
+                             Content="Monitor Graph"
+                             Margin="5"
+                             Checked="_SelectGraph_Event"/>
+                <!--Select FanTable-->
+                <TextBlock Text="Fan Table" Grid.Column="2" Grid.Row="2"/>
+                <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="2">
+                    <StackPanel.Resources>
+                        <Style TargetType="RadioButton">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="GroupName" Value="Graph"/>
+                            <Setter Property="Margin" Value="5"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <RadioButton x:Name="_Fan_1" Content="Fan 1" Checked="_SelectGraph_Event" Visibility="{Binding ElementName=Fan_1, Path=Visibility}"/>
+                    <RadioButton x:Name="_Fan_2" Content="Fan 2" Checked="_SelectGraph_Event" Visibility="{Binding ElementName=Fan_2, Path=Visibility}"/>
+                    <RadioButton x:Name="_Fan_3" Content="Fan 3" Checked="_SelectGraph_Event" Visibility="{Binding ElementName=Fan_3, Path=Visibility}"/>
+                </StackPanel>
+            </Grid>
+            <Line X1="0" X2="{Binding Path=ActualWidth, ElementName=Misc}" Stroke="Gray" StrokeThickness="1" Height="1"/>
+            <local:ChartBase x:Name="_ChartBase" Height="684"></local:ChartBase>
+        </StackPanel>
+    </Grid>
+</Window>
