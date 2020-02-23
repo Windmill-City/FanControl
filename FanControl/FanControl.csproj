@@ -236,6 +236,8 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Dlls\WinRing0.sys" />
+    <None Include="Dlls\WinRing0x64.sys" />
     <None Include="FanControl_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
@@ -272,6 +274,11 @@
     <Resource Include="Control\image\fan\system_fan_layer1_1.png" />
     <Resource Include="Control\image\fan\system_fan_layer2_1.png" />
     <Resource Include="Control\image\fan\system_fan_layer3_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Dlls\NV_Helper.dll" />
+    <Content Include="Dlls\WinRing0.dll" />
+    <Content Include="Dlls\WinRing0x64.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
