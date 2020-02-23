@@ -200,7 +200,6 @@ namespace FanControl
             {
                 Region_RiseOrDec = 0;
                 Abrupt_Change_Time = 0;
-                TrendStableTime = 0;
                 Region_Time = 0;
                 lastDelta = 0;
             }
