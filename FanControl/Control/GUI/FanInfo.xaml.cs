@@ -53,8 +53,8 @@ namespace FanControl
             {
                 storyboard.Resume();
                 R_FanLayer2.Visibility = Visibility.Visible;
-                storyboard.SetSpeedRatio(Math.Pow((rpm / 5400) + 1, 5));
             }
+            storyboard.SetSpeedRatio(Math.Pow((rpm / 5400) + 1, 5));
         }
 
         public static double RpmConvert(object value)

@@ -54,6 +54,8 @@ namespace FanControl
                         goto Save;
                     case "143"://Max
                         fanmode = 1;
+                        if(config.FanMode == 4)
+                            ec.SetWMI(121, 0, (uint)0);//need to set auto first,or it may struck sometime
                         ec.SetWMI(121, 0, (uint)fanmode);
                         goto Save;
                 }

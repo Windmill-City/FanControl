@@ -42,7 +42,7 @@ namespace FanControl
                 uint index = 0x606, eax = 0, edx = 0;
                 SingleInstanceManager.Instance.ols.Rdmsr(index, ref eax, ref edx);
                 Power_Unit = Math.Pow(0.5, eax & 0xF);
-                Enery_Status_Unit = Math.Pow(0.5, (eax & 0x1F00) >> 7);
+                Enery_Status_Unit = Math.Pow(0.5, (eax >> 8) & 0xF);
 
                 //Init Power data
                 getPowerByIndex(0x64D);
@@ -172,7 +172,7 @@ namespace FanControl
             var span = Math.Abs(Environment.TickCount - time[i]);
             time[i] = Environment.TickCount;
 
-            return Math.Round(delta / span * Enery_Status_Unit * 1e7, 2);//I dont know why 1e7,but it seems correct
+            return Math.Round(delta / span * 1000 * Enery_Status_Unit, 2);
         }
     }
 }
