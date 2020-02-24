@@ -68,15 +68,12 @@ namespace FanControl
             if (cfg.isAutoStart)
             {
                 TaskService service = TaskService.Instance;
-                if (service.GetTask(taskPath) == null)
-                {
-                    TaskDefinition taskDef = service.NewTask();
-                    taskDef.Principal.RunLevel = TaskRunLevel.Highest;
-                    taskDef.Actions.Add(new ExecAction(Application.ExecutablePath));
-                    taskDef.Triggers.Add(new LogonTrigger { Delay = TimeSpan.FromSeconds(10) });
+                TaskDefinition taskDef = service.NewTask();
+                taskDef.Principal.RunLevel = TaskRunLevel.Highest;
+                taskDef.Actions.Add(new ExecAction(Application.ExecutablePath));
+                taskDef.Triggers.Add(new LogonTrigger { Delay = TimeSpan.FromSeconds(10) });
 
-                    service.RootFolder.RegisterTaskDefinition(taskPath, taskDef);
-                }
+                service.RootFolder.RegisterTaskDefinition(taskPath, taskDef);
             }
             else
             {

@@ -129,6 +129,20 @@ namespace FanControl
                 ToolTipService.SetShowDuration(prop, 5000);
                 setting_panel.Children.Add(prop);
             }
+            //Starting Duty
+            Desc = new TextBlock();
+            Desc.Text = "Starting\nDuty";
+            setting_panel.Children.Add(Desc);
+            //TextBox
+            prop = new TextBox();
+            prop.Name = "StartingDuty";
+            prop.Text = fanTable.StartingDuty.ToString();
+            prop.LostFocus += Prop_LostFocus;
+            tooltip = new TextBlock();
+            tooltip.Text = "Set the fan starting duty";
+            prop.ToolTip = tooltip;
+            ToolTipService.SetShowDuration(prop, 10000);
+            setting_panel.Children.Add(prop);
         }
 
         private void Canvas_MouseEvent(object sender, MouseEventArgs e)
@@ -163,6 +177,9 @@ namespace FanControl
                         break;
                     case "Gpu_2":
                         fanTable.Gpu_2_Proportion = prop;
+                        break;
+                    case "StartingDuty":
+                        fanTable.StartingDuty = prop;
                         break;
                 }
         }

@@ -60,6 +60,31 @@ namespace FanControl
                 config.saveValue(SettingSection, "Fixed", value);
             }
         }
+        int? _StartingDuty;
+        public int StartingDuty
+        {
+            get
+            {
+                if (_StartingDuty == null)
+                    try
+                    {
+                        var value = config.getValue(SettingSection, "StartingDuty");
+                        _StartingDuty = Convert.ToInt32(value);
+                        Assert.IsTrue(_StartingDuty >= 0 && _StartingDuty <= 100);
+                    }
+                    catch (Exception)
+                    {
+                        _StartingDuty = 0;
+                        StartingDuty = (int)_StartingDuty;
+                    }
+                return (int)_StartingDuty;
+            }
+            set
+            {
+                _StartingDuty = value;
+                config.saveValue(SettingSection, "StartingDuty", value);
+            }
+        }
         int? Cpu_prop;
         public int CpuProportion
         {

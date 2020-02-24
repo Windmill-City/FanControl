@@ -99,21 +99,26 @@ namespace FanControl
                 int temp = (table.CpuProportion * cpu + table.Gpu_1_Proportion * gpu1 + table.Gpu_2_Proportion * gpu2) /
                     sum;
                 int move = 0;
+                Fan Current;
                 switch (i)
                 {
                     case 1:
+                        Current = ec.Fan_1;
                         break;
                     case 2:
+                        Current = ec.Fan_1;
                         move = 8;
                         break;
                     case 3:
+                        Current = ec.Fan_1;
                         move = 16;
                         break;
                     default:
                         throw new ArgumentException("Illegal fan num");
                 }
-                int duty = (byte)(table.Y_FromX(temp) * 2.55);
-                Command += (UInt32)duty << move;
+                int duty = table.Y_FromX(temp);
+                duty = duty != 0 && duty < table.StartingDuty && Current.RPM == 0 && table.StartingDuty > 0 ? table.StartingDuty : duty;
+                Command += (uint)((byte)(duty * 2.55) << move);
             }
             SingleInstanceManager.Instance.ec.SetWMI(104, 0, Command);
         }
