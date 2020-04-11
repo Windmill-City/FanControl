@@ -1,6 +1,8 @@
 ﻿using Microsoft.Win32;
+using Microsoft.Win32.TaskScheduler;
 using System;
 using System.Threading;
+using System.Windows.Forms;
 using System.Windows.Media;
 
 namespace FanControl
@@ -83,7 +85,7 @@ namespace FanControl
             MonitorThread.Priority = ThreadPriority.Highest;
             MonitorThread.Start();
         }
-        Timer Resume_Timer;
+        System.Threading.Timer Resume_Timer;
         private void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
         {
             switch (e.Mode)
@@ -92,7 +94,7 @@ namespace FanControl
                     Sys_Sleep = true;
                     break;
                 case PowerModes.Resume:
-                    Resume_Timer = new Timer(new TimerCallback((obj) =>
+                    Resume_Timer = new System.Threading.Timer(new TimerCallback((obj) =>
                     {
                         if (SingleInstanceManager.Instance.supportMSR)
                         {
@@ -103,6 +105,19 @@ namespace FanControl
                         Sys_Sleep = false;
                         Resume_Timer.Dispose();
                     }), null, TimeSpan.FromSeconds(10), TimeSpan.FromMilliseconds(-1));
+                    TaskService service = TaskService.Instance;
+                    Task task = service.GetTask("Universal Orchestrator Start");
+                    if(task != null && task.State == TaskState.Running)
+                    {
+                        Thread thread = new Thread(new ThreadStart(() => {
+                            while(task.State == TaskState.Running)
+                            {
+
+                            }
+                            Application.SetSuspendState(PowerState.Suspend, false, false);
+                        }));
+                        thread.Start();
+                    }
                     break;
             }
         }
